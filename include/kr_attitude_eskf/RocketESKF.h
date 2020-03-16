@@ -48,23 +48,61 @@ namespace srpl {
      *      gravity (x,y,z)
      * 
      */
-    class RocketESKF : kr::AttitudeESKF {
+    class RocketESKF {
         
-        /**
-         *  @brief Constructor
-         */
-        RocketESKF();
+        public:
 
-        /**
-         * @brief prediction step.
-         * @param wRaw Gyroscope raw data in body frame.
-         * @param accRaw Accelerometer raw data in body frame.
-         * @param dt Time step in second.
-         * @param wCov Covariance of gyro measurement.
-         * @param accCov Covariance of accelerometer measurement.
-         * @param useRK4 If true, use RK4 integration - otherwise euler is used
-         */
-        void predict(const vec3 &wRaw, const vec3 &accRaw, scalar_t dt
-                     const mat3 &wCov, const mat3 &accCov, bool userRK4=false);
+            typedef double scalar_t;
+            typedef Eigen::Matrix<scalar_t, 3, 1> vec3; // Vector in R3
+            typedef Eigen::Matrix<scalar_t, 3, 3> mat3; // Matrix in R3
+            typedef Eigen::Quaternion<scalar_t> quat; // Member of S4
+
+            /**
+             *  @brief Constructor
+             */
+            RocketESKF();
+
+            /**
+             * @brief prediction step.
+            * @param wRaw Gyroscope raw data in body frame.
+            * @param accRaw Accelerometer raw data in body frame.
+            * @param dt Time step in second.
+            * @param wCov Covariance of gyro measurement.
+            * @param accCov Covariance of accelerometer measurement.
+            * @param useRK4 If true, use RK4 integration - otherwise euler is used
+            */
+            void predict(const vec3 &wRaw, const vec3 &accRaw, scalar_t dt
+                         const mat3 &wCov, const mat3 &accCov, bool userRK4=false);
+
+            /**
+             * @brief Accelerometer update.
+             * 
+             */
+            void AccUpdate
+            
+            void ImuCB(const sensor_msgs::IMU:ConstPtr &msg );
+
+            // Variables
+            //States
+            quat Att; // quaternion of body frame w.r.t ECEF frame
+            vec3 b_g; // Gyro bias;
+            vec3 Vel; // velocity in ECEF frame
+            vec3 b_a; // Accelerometer bias
+            vec3 Pos; // position in ECEF frame
+
+            vec3 DelTheta; // Quaternion error-state
+
+            vec3 Gyro_C; // Bias-free gyro measurement
+            vec3 Acc_C; // Bias-free Accelerometer measurement
+
+            // Inputs
+            vec3 GyroRaw; // Gyro raw data;
+            vec3 AccRaw; // Accelerometer raw data
+
+
+
+
+            
+
     }
 }
